@@ -1,0 +1,80 @@
+*minicommenter.txt*                  v0.1                      *minicommenter*
+
+
+
+                            Minimalistic Commenter
+                                minicommenter
+
+
+==============================================================================
+0. - CONTENTS                                         *minicommenter-contents*
+
+    1. Intro__________________________|minicommenter-intro|
+    2. Functionnality_________________|minicommenter-functionnality|
+    3. Options________________________|minicommenter-options|
+    4. Mappings_______________________|minicommenter-mappings|
+    5. Maintainer_____________________|minicommenter-maintainer|
+
+==============================================================================
+
+1. INTRO                                                 *minicommenter-intro*
+
+This plug-in provides easy comments toggling. No extra features and unneeded
+functionnalities. Only the bare necessities ♫.
+
+==============================================================================
+
+2. - FUNCTIONNALITY                             *minicommenter-functionnality*
+
+Comment toggling, both in Normal and Visual mode through the `<leader>cc`
+mapping. 
+Comments can either be single line style comments or block comments (multi-
+lines) (see |minicommenter-options|).
+
+==============================================================================
+
+3. - OPTIONS                                           *minicommenter-options*
+
+------------------------------------------------------------------------------
+g:mincomment_block_threshold                    *g:mincomment_block_threshold*
+
+Values: an integer
+Default: 50
+
+Comments can be of two types: >
+
+  // Example of a C style single line comment.
+
+  /*
+   * Example of a C style block comment.
+   */
+<
+
+When a large number of lines need to be commented, minicommenter decides to
+use block comments if available based on a threshold value. The threshold is
+the value of g:mincomment_block_threshold,, which is the number of lines to
+comment at which block comments will be prefered.
+
+Note: block commenting can be disabled by setting the value to -1.
+------------------------------------------------------------------------------
+
+==============================================================================
+
+4. - MAPPINGS                                         *minicommenter-mappings*
+
+A single mapping that is `<leader>cc` that calls the internal comment toggling
+function `s:toggle_comment()`.
+
+==============================================================================
+
+5. - MAINTAINER                                     *minicommenter-maintainer*
+
+*Wave*, I'm Quentin Debroise. I got bored of all the other "popular" plugins
+doing commenting. They have a ton of functionnality while I only need a
+fraction of what they have to offer. So, this happened ¯\_(ツ)_/¯.
+
+Feel free to send any suggestions and or comments. I'll be happy to read them.
+
+==============================================================================
+
+vim:tw=78:et:ts=8:sw=2:ft=help:norl:

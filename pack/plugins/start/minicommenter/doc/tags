@@ -1,0 +1,9 @@
+g:mincomment_block_threshold	minicommenter.txt	/*g:mincomment_block_threshold*
+minicommenter	minicommenter.txt	/*minicommenter*
+minicommenter-contents	minicommenter.txt	/*minicommenter-contents*
+minicommenter-functionnality	minicommenter.txt	/*minicommenter-functionnality*
+minicommenter-intro	minicommenter.txt	/*minicommenter-intro*
+minicommenter-maintainer	minicommenter.txt	/*minicommenter-maintainer*
+minicommenter-mappings	minicommenter.txt	/*minicommenter-mappings*
+minicommenter-options	minicommenter.txt	/*minicommenter-options*
+minicommenter.txt	minicommenter.txt	/*minicommenter.txt*
