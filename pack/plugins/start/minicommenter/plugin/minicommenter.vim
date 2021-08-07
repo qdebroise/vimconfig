@@ -29,7 +29,7 @@ endfunction
 
 " If the selection is greater than the parameter then block commenting will be
 " used if available.
-call s:var_init_missing("g:mincomment_block_threshold", -1)
+call s:var_init_missing("g:mincomment_block_threshold", 50)
 
 " Filetypes comments symbols {{{
 " This list if based on the list in the NERDCommenter plugin.
@@ -74,6 +74,7 @@ let s:filetype_comment_symbols_map = {
     \ 'gitcommit'              : [               ['#'],                  []],
     \ 'gitconfig'              : [               [';'],                  []],
     \ 'gitrebase'              : [               ['#'],                  []],
+    \ 'glsl'                   : [              ['//'],        ['/*', '*/']],
     \ 'gnuplot'                : [               ['#'],                  []],
     \ 'go'                     : [              ['//'],        ['/*', '*/']],
     \ 'groovy'                 : [              ['//'],        ['/*', '*/']],
@@ -154,12 +155,11 @@ augroup minicommenter
 augroup END
 
 function s:update_comment_symbols(filetype)
-    let b:mincomment_unknown_filetype = v:false
-    if has_key(s:filetype_comment_symbols_map, a:filetype)
+    let b:mincomment_filetype_known = has_key(s:filetype_comment_symbols_map, a:filetype)
+    if b:mincomment_filetype_known
         let b:mincomment_sym = s:filetype_comment_symbols_map[a:filetype]
-    else
-        let b:mincomment_unknown_filetype = v:true
     endif
+
 endfunction
 
 
@@ -168,24 +168,27 @@ endfunction
 """"" Core {{{
 
 function s:toggle_comment() range
-    " Print a nice message the the user when filetype is unknown.
-    if b:mincomment_unknown_filetype
+    " Print a nice message to the the user when filetype is unknown.
+    if !b:mincomment_filetype_known
         echohl WarningMsg |
             \ echom 
                 \   "Unkown comment symbols for '" . &filetype . "' filetype. "
-                \ . "Extend the list in ~/.vim/pack/plugins/start/NERD_commenter/plugin/minicommenter.vim :)" | 
+                \ . "Extend the list in ~/.vim/pack/plugins/start/minicommenter/plugin/minicommenter.vim :)" | 
             \ echohl None
         return
     endif
 
     " Find which types of comment are available.
-    let single_comment_available = v:true
-    let block_comment_available = v:true
-    if empty(b:mincomment_sym[0])
-        let single_comment_available = v:false
-    endif
-    if empty(b:mincomment_sym[1])
-        let block_comment_available = v:false
+    let single_comment_available = !empty(b:mincomment_sym[0])
+    let block_comment_available = !empty(b:mincomment_sym[1])
+
+    if !single_comment_available && !block_comment_available
+        echohl WarningMsg |
+            \ echom 
+                \   "No commenting symbols defined for '" . &filetype . "' filetype. "
+                \ . "Update the symbols for this filetype in ~/.vim/pack/plugins/start/minicommenter/plugin/minicommenter.vim :)" | 
+            \ echohl None
+        return
     endif
 
     " Retrieve comment symbols.

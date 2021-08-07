@@ -2,5 +2,5 @@
 #define [:VIM_EVAL:]toupper(expand('%:t:r'))[:VIM_EVAL:]_H_
 
 
-#endif
+#endif // [:VIM_EVAL:]toupper(expand('%:t:r'))[:VIM_EVAL:]_H_
 

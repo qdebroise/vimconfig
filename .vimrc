@@ -9,7 +9,8 @@
 " @NETRW    - Vim Netrw file explorer.
 " @MISC     - Miscellaneous configurations.
 " @PLUGINS  - Plugin related stuff
-"       - GDB: Vim built-in package from version 8.1.
+"       - cfilter: Vim built-in package.
+"       - GDB: Vim built-in package.
 "       - minicommenter: my own plugin :)
 "       - delimitMate: https://github.com/Raimondi/delimitMate
 
@@ -33,7 +34,9 @@ set autoread
 set viminfo^=%
 
 " Set the behavior when switching buffers like with the quickfix winwdow.
-set switchbuf=useopen,usetab,vsplit
+set switchbuf=useopen,usetab
+" [REMOVED] Even though it is useful in some cases, it became anoying for the quickfix window to create new splits.
+" set switchbuf+=vsplit
 
 " Use spaces instead of tabs.
 set expandtab
@@ -66,7 +69,8 @@ set cpoptions+=$
 set foldenable
 
 " Fold according to C syntax.
-set foldmethod=syntax
+" This gets *really* slow in large C files.
+" set foldmethod=syntax
 "set foldmethod=indent
 
 " Allow one fold level only.
@@ -103,12 +107,20 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
+" Better way to move out of a terminal window.
+if has('terminal')
+    tnoremap <C-j> <C-W>j
+    tnoremap <C-k> <C-W>k
+    tnoremap <C-h> <C-W>h
+    tnoremap <C-l> <C-W>l
+endif
+
 " Remap Vim's '0' to first non-blank character.
 map 0 ^
 
 " Move a line of text using 'ALT+[jk]'.
 nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
+nmap <M-k> mz:m-3<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
@@ -163,7 +175,7 @@ vnoremap $' <esc>`>a'<esc>`<i'<esc>
 """"" @FILES {{{
 
 " Set Vim path.
-set path+=**
+set path=.,**
 
 " Files to ignore in the wild menu.
 set wildignore+=*~,*.o,*.d,*.pyc
@@ -284,6 +296,9 @@ set mat=2
 " Include the cursor position in the selection.
 set selection=inclusive
 
+" When splitting put the new window right/below the current one.
+set splitright
+set splitbelow
 
 "}}}
 
@@ -319,6 +334,8 @@ if has("win16") || has("win32")
     set guifont=Consolas:h10
 endif
 
+" Highlight markdown code blocks according to the language syntax.
+let g:markdown_fenced_languages = ['c', 'cpp', 'c++=cpp', 'html', 'javascript', 'js=javascript', 'json=javascript', 'sh', 'bash=sh', 'xml']
 
 "}}}
 
@@ -379,10 +396,19 @@ autocmd BufNewFile *.py keepalt 0r ~/.vim/templates/skeleton.py
 " GLSL filetype for syntax highlighting.
 autocmd BufNewFile,BufRead *.vert,*.frag,*.glsl set ft=glsl
 
+" Find to which highlight group a symbol belongs to.
+map <F7> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+
 
 "}}}
 
 """"" @PLUGINS {{{
+
+" Built-in plug-in to filter Quifix and Location lists.
+silent! packadd cfilter
 
     """"" GDB {{{
 
