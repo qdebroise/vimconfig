@@ -12,7 +12,7 @@
 "       - cfilter: Vim built-in package.
 "       - GDB: Vim built-in package.
 "       - minicommenter: my own plugin :)
-"       - delimitMate: https://github.com/Raimondi/delimitMate
+"       - auto-pairs: https://github.com/jiangmiao/auto-pairs
 
 
 """"" @GENERAL {{{
@@ -439,9 +439,10 @@ silent! packadd cfilter
 
     "}}}
 
-    """"" DelimitMate {{{
+    """"" auto-pairs {{{
 
-    " @TODO mess with the plugin source code to keep only the bare minimum.
+
+    "}}}
 
     " @TODO plugin settings.
 
