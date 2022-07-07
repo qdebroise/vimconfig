@@ -7,7 +7,6 @@
 " @VISUAL   - Visual mode colors.
 " @SPELLING - Spell checker.
 " @SYNTAX   - Language syntax.
-" @PREPROCESSOR - C/C++ preprocessor directives.
 " @FOLDS    - Anything related to Vim folds.
 " @STATUS   - Status line.
 " @COMMENT  - Comments.
@@ -65,7 +64,7 @@ endfunction
 
 """"" @GENERAL {{{
 
-call s:colorize('Normal'      , ['252', '232',     '', '#d0d0d0', '#080808',     '']) " General background and foreground.
+call s:colorize('Normal'      , ['252', '232',     '', '#c8c8c8', '#181818',     '']) " General background and foreground.
 call s:colorize('LineNr'      , ['243',    '',     '', '#767676',        '',     '']) " Numbers.
 call s:colorize('CursorLineNr', ['243',    '',     '', '#767676',        '',     '']) " Number where the cursor currently is.
 call s:colorize('Directory'   , ['68',     '', 'bold', '#5f87d7',        '', 'bold']) " Directories (eg in Netrw, edit file, etc).
@@ -83,7 +82,7 @@ call s:colorize('VisualNOS', ['', '24', '', '', '#005f87', '']) " Color when sel
 
 """"" @SPELLING {{{
 
-" @TODO
+" @Todo: I don't use these.
 
 call s:colorize('SpellRare' , ['', '', '', '', '', ''])
 call s:colorize('SpellBad'  , ['', '', '', '', '', ''])
@@ -93,7 +92,7 @@ call s:colorize('SpellLocal', ['', '', '', '', '', ''])
 
 """"" }}}
 
-"""""" @SYNTAX {{{
+""""" @SYNTAX {{{
 
 call s:colorize('Statement'   , ['115', '',     '', '#87d7af', '',     '']) " C 'if', 'else', 'return', 'break', etc.
 call s:colorize('Conditional' , ['115', '',     '', '#87d7af', '',     ''])
@@ -107,18 +106,20 @@ call s:colorize('StorageClass', ['110', '',     '', '#87afd7', '',     '']) " C 
 call s:colorize('Constant'    , ['132', '',     '', '#af5f87', '',     '']) " C 'true', 'false', 'NULL', etc.
 call s:colorize('Function'    , [   '', '',     '',        '', '',     ''])
 call s:colorize('Keyword'     , [   '', '',     '',        '', '',     ''])
-
-
-"}}}
-
-""""" @PREPROCESSOR {{{
-
-" All the C preprocessor directives 'define', 'include', 'if', etc.
+" The following include all the C preprocessor directives 'define', 'include', 'if', etc.
 call s:colorize('Macro'    , ['67', '', '', '#5f87af', '', ''])
 call s:colorize('Define'   , ['67', '', '', '#5f87af', '', ''])
 call s:colorize('Include'  , ['67', '', '', '#5f87af', '', ''])
 call s:colorize('PreCondit', ['67', '', '', '#5f87af', '', ''])
 call s:colorize('PreProc'  , ['67', '', '', '#5f87af', '', ''])
+
+" C specifics.
+call s:colorize('cOperator'   , ['215', '',     '', '#ffaf5f', '',     ''])
+
+" Python specifics.
+call s:colorize('pythonOperator',   ['115',     '',     '', '#87d7af',      '',     '']) " in, and, or, etc.
+call s:colorize('pythonBuiltin' ,   ['110',     '',     '', '#87afd7',      '',     '']) " len, None, int, etc.
+" call s:colorize('pythonBuiltin' ,   ['215',     '',     '', '#ffaf5f',      '',     ''])
 
 
 "}}}
@@ -133,7 +134,7 @@ call s:colorize('FoldColumn', ['', '233', '', '', '#121212', ''])
 
 """"" @STATUS {{{
 
-" call s:colorize('StatusLine'  , ['217', '234', '', '#ffafaf', '#1c1c1c', ''])
+" call s:colorize('StatusLine'  , ['217', '234', '', '#ffafaf', '#005f87', ''])
 call s:colorize('StatusLine'  , [ '16',  '95', '', '#000000', '#875f5f', '']) " Status line in window with focus
 call s:colorize('StatusLineNC', ['217', '234', '', '#ffafaf', '#1c1c1c', '']) " Status line in windows without focus
 
@@ -142,7 +143,7 @@ call s:colorize('StatusLineNC', ['217', '234', '', '#ffafaf', '#1c1c1c', '']) " 
 
 """"" @COMMENT {{{
 
-call s:colorize('Comment'       , ['240', '',               '', '#585858', '',               '']) " Comments color.
+call s:colorize('Comment'       , ['242', '',               '', '#6c6c6c', '',               '']) " Comments color.
 call s:colorize('SpecialComment', ['246', '',               '', '#949494', '',               '']) " Comments like documentation and stuff.
 call s:colorize('Todo'          , ['208', '', 'bold,underline', '#ff8700', '', 'bold,underline']) " Todos.
 
@@ -165,10 +166,10 @@ call s:colorize('Float'      , ['132', '', '', '#af5f87', '', ''])
 
 """"" @PMENU {{{
 
-call s:colorize('Pmenu'     , ['234', '225', '', '#1c1c1c', '#ffdfff', '']) " Normal item colors.
-call s:colorize('PmenuSel'  , [ '15',  '96', '', '#ffffff', '#875f87', '']) " Selected item.
-call s:colorize('PmenuThumb', [   '', '242', '',        '', '#6c6c6c', '']) " Scrollbar background.
-call s:colorize('PmenuSbar' , [   '', '139', '',        '', '#af87af', '']) " Scrollbar thumb.
+call s:colorize('Pmenu'     , ['234', '225', '', '#1c1c1c', '#ffafff', '']) " Normal item colors.
+call s:colorize('PmenuSel'  , [ '15',  '96', '', '#ffffff', '#d700d7', '']) " Selected item.
+call s:colorize('PmenuThumb', [   '', '242', '',        '', '#585858', '']) " Scrollbar background.
+call s:colorize('PmenuSbar' , [   '', '139', '',        '', '#ff5fff', '']) " Scrollbar thumb.
 
 
 "}}}
@@ -187,23 +188,24 @@ call s:colorize('TabLineFill', [   '', '232', '',        '', '#080808', '']) " T
 call s:colorize('ModeMsg' , ['113', '', '', '#87d75f', '', '']) " Vim current mode (INSERT, VISUAL, etc).
 call s:colorize('MoreMsg' , ['113', '', '', '#87d75f', '', '']) " More, message prompt.
 call s:colorize('Question', ['113', '', '', '#87d75f', '', '']) " Yes/no questions prompt (like asking for substitutions).
+call s:colorize('MoreMsg' , [   '', '', '',        '', '', '']) " '-- More --' prompt
 
 
 "}}}
 
 """"" @CURSOR {{{
 
-call s:colorize('CursorLine'  , ['', '234', '', '', '#1c1c1c', '']) " Line the cursor is on. (set cursorline)
+call s:colorize('CursorLine'  , ['', '234', '', '', '#2a2933', '']) " Line the cursor is on. (set cursorline)
 call s:colorize('CursorColumn', ['', '234', '', '', '#1c1c1c', '']) " Column the cursor is on. (set cursorcolumn)
-call s:colorize('Cursor'      , ['',    '', '', '',        '', ''])
-call s:colorize('iCursor'     , ['',    '', '', '',        '', ''])
+call s:colorize('Cursor'      , ['',    '', '', '', '#ffffff', ''])
+call s:colorize('iCursor'     , ['',    '', '', '', '#ffffff', ''])
 
 
 "}}}
 
 """"" @DIFFS {{{
 
-" @TODO to fill when I'll find the need for Vimdiff :o).
+" @Todo: fill when I'll find a need to use Vimdiff.
 
 call s:colorize('DiffText'   , ['', '', '', '', '', ''])
 call s:colorize('diffCommon' , ['', '', '', '', '', ''])
@@ -268,9 +270,6 @@ call s:colorize('SpecialKey', [   '', '', '', '',        '', ''])
 
 
 "}}}
-
-" TODO: C specifics
-call s:colorize('cOperator'   , ['215', '',     '', '#ffaf5f', '',     ''])
 
 "" vim:foldmethod=marker
 "" vim:foldclose=all
