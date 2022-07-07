@@ -27,14 +27,10 @@ function s:var_init_missing(var, value)
     endif
 endfunction
 
-" If the selection is greater than the parameter then block commenting will be
-" used if available.
-call s:var_init_missing("g:mincomment_block_threshold", 50)
+" Always use block commenting when available.
+call s:var_init_missing("g:mincomment_always_use_block", 0)
 
 " Filetypes comments symbols {{{
-" This list if based on the list in the NERDCommenter plugin.
-" https://github.com/preservim/nerdcommenter
-"
 " @FILETYPE_SYM_MAP
 "
 " format: 'filetype' : [['single line'], ['block begin', 'block end]]
@@ -167,84 +163,68 @@ endfunction
 
 """"" Core {{{
 
-function s:toggle_comment() range
-    " Print a nice message to the the user when filetype is unknown.
+function minicommenter#toggle_comment() range
     if !b:mincomment_filetype_known
         echohl WarningMsg |
-            \ echom 
+            \ echom
                 \   "Unkown comment symbols for '" . &filetype . "' filetype. "
-                \ . "Extend the list in ~/.vim/pack/plugins/start/minicommenter/plugin/minicommenter.vim :)" | 
+                \ . "Extend the list in ~/.vim/pack/plugins/start/minicommenter/plugin/minicommenter.vim :)" |
             \ echohl None
         return
     endif
 
-    " Find which types of comment are available.
-    let single_comment_available = !empty(b:mincomment_sym[0])
-    let block_comment_available = !empty(b:mincomment_sym[1])
+    let has_line_comment = len(b:mincomment_sym[0]) == 1
+    let has_block_comment = len(b:mincomment_sym[1]) == 2
 
-    if !single_comment_available && !block_comment_available
+    if !has_line_comment && !has_block_comment
         echohl WarningMsg |
             \ echom 
                 \   "No commenting symbols defined for '" . &filetype . "' filetype. "
-                \ . "Update the symbols for this filetype in ~/.vim/pack/plugins/start/minicommenter/plugin/minicommenter.vim :)" | 
+                \ . "Update the symbols for this filetype in ~/.vim/pack/plugins/start/minicommenter/plugin/minicommenter.vim" | 
             \ echohl None
         return
     endif
 
-    " Retrieve comment symbols.
-    if single_comment_available
-        let single = b:mincomment_sym[0][0]
-    endif
-    if block_comment_available
-        let block_beg = b:mincomment_sym[1][0]
-        let block_end = b:mincomment_sym[1][1]
-    endif
-
-    let range = a:lastline - a:firstline + 1
+    let use_block_comment = (has_block_comment && !has_line_comment) || (g:mincomment_always_use_block && has_block_comment)
+    let sym_start = use_block_comment ? b:mincomment_sym[1][0] : b:mincomment_sym[0][0]
+    let sym_end = use_block_comment ? b:mincomment_sym[1][1] : ''
 
     let start = reltime()
-    if (single_comment_available && range < g:mincomment_block_threshold) ||
-      \(range >= g:mincomment_block_threshold && !block_comment_available)
-        " Per line commenting.
-        let current_line = a:firstline
-        while current_line <= a:lastline
-            let l = getline(current_line)
 
-            let indent = matchend(l, '^\s*')
+    " Per line commenting.
+    let current_line = a:firstline
+    while current_line <= a:lastline
+        let l = getline(current_line)
+        let indent = matchend(l, '^\s*')
 
-            " Skip empty lines
-            if empty(l) || indent == len(l)
-                let current_line += 1
-                continue
-            endif
-
-            let is_commented = l[indent:indent+len(single)-1] ==# single
-            if is_commented
-                " @TODO(performance): compare with other solutions.
-                call setline(current_line, substitute(l, '\(^\s*\)'. single .' \?', '\1', ''))
-                " call setline(current_line, repeat(' ', indent) . l[indent+len(single)+1:])
-            else
-                " @TODO(performance): compare with other solution.
-                call setline(current_line, substitute(l, '\(^\s*\)', '\1'. single .' ', ''))
-                " call setline(current_line, repeat(' ', indent) . '// ' . l[indent:])
-            endif
-
+        " Skip empty lines
+        if empty(l) || indent == len(l)
             let current_line += 1
-        endwhile
-    elseif block_comment_available
-        " Block commenting.
-        call append(a:lastline, block_end)
-        call append(a:firstline - 1, block_beg)
-    endif
-    echom (a:lastline - a:firstline + 1) . " lines commented in " . reltimestr(reltime(start)) . " s"
+            continue
+        endif
 
+        let is_commented = l[indent:indent+len(sym_start)-1] ==# sym_start
+        if is_commented
+            call setline(current_line, use_block_comment
+                \ ? repeat(' ', indent) . l[indent+len(sym_start)+1:-len(sym_end) - 2]
+                \ : repeat(' ', indent) . l[indent+len(sym_start)+1:])
+        else
+            call setline(current_line, use_block_comment
+                \ ? repeat(' ', indent) . sym_start . ' ' . l[indent:] . ' ' . sym_end
+                \ : repeat(' ', indent) . sym_start . ' ' . l[indent:])
+        endif
+
+        let current_line += 1
+    endwhile
+
+    echom (a:lastline - a:firstline + 1) . " lines commented in " . reltimestr(reltime(start)) . " s"
 endfunction
 
 
 "}}}
 
 
-noremap <leader>cc :call <sid>toggle_comment()<cr>
+command! -range -nargs=0 ToggleComment <line1>,<line2>call minicommenter#toggle_comment()
 
 
 "" vim:foldmethod=marker

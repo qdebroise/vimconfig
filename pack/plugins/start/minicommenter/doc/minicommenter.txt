@@ -1,4 +1,4 @@
-*minicommenter.txt*                  v0.1                      *minicommenter*
+*minicommenter.txt*                  v0.2                      *minicommenter*
 
 
 
@@ -28,49 +28,40 @@ functionnalities. Only the bare necessities ♫.
 
 Comment toggling, both in Normal and Visual mode through the `<leader>cc`
 mapping. 
-Comments can either be single line style comments or block comments (multi-
-lines) (see |minicommenter-options|).
 
 ==============================================================================
 
 3. - OPTIONS                                           *minicommenter-options*
 
 ------------------------------------------------------------------------------
-g:mincomment_block_threshold                    *g:mincomment_block_threshold*
+g:mincomment_always_use_block                   *g:mincomment_always_use_block*
 
-Values: an integer
-Default: 50
+Values: a boolean
+Default: 0
 
-Comments can be of two types: >
-
-  // Example of a C style single line comment.
-
-  /*
-   * Example of a C style block comment.
-   */
-<
-
-When a large number of lines need to be commented, minicommenter decides to
-use block comments if available based on a threshold value. The threshold is
-the value of g:mincomment_block_threshold,, which is the number of lines to
-comment at which block comments will be prefered.
-
-Note: block commenting can be disabled by setting the value to -1.
+When this option is set to '1', lines will be commented using block comments
+if available. For instance, in C/C++ files, lines will be commented with '//'
+when set to '0' and with '/* */' when set to '1'.
 ------------------------------------------------------------------------------
 
 ==============================================================================
 
 4. - MAPPINGS                                         *minicommenter-mappings*
 
-A single mapping that is `<leader>cc` that calls the internal comment toggling
-function `s:toggle_comment()`.
+A single function is exposed *minicommenter#toggle_comment()* for toggling
+comments. This function is wrapped in the command *:ToggleComment* that can be
+mapped be the user.
+
+Example:
+
+`nnoremap <leader>cc :ToggleComment<CR>`
 
 ==============================================================================
 
 5. - MAINTAINER                                     *minicommenter-maintainer*
 
-*Wave*, I'm Quentin Debroise. I got bored of all the other "popular" plugins
-doing commenting. They have a ton of functionnality while I only need a
+*Wave*, I'm Q. I got bored of all the other "popular" plugins doing
+commenting. They have a ton of functionnality while I only need a
 fraction of what they have to offer. So, this happened ¯\_(ツ)_/¯.
 
 Feel free to send any suggestions and or comments. I'll be happy to read them.

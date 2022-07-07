@@ -1,5 +1,7 @@
-g:mincomment_block_threshold	minicommenter.txt	/*g:mincomment_block_threshold*
+:ToggleComment	minicommenter.txt	/*:ToggleComment*
+g:mincomment_always_use_block	minicommenter.txt	/*g:mincomment_always_use_block*
 minicommenter	minicommenter.txt	/*minicommenter*
+minicommenter#toggle_comment()	minicommenter.txt	/*minicommenter#toggle_comment()*
 minicommenter-contents	minicommenter.txt	/*minicommenter-contents*
 minicommenter-functionnality	minicommenter.txt	/*minicommenter-functionnality*
 minicommenter-intro	minicommenter.txt	/*minicommenter-intro*

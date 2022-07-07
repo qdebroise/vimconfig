@@ -434,6 +434,7 @@ silent! packadd cfilter
     "}}}
 
     """"" minicommenter {{{
+        noremap <leader>cc :ToggleComment<CR>
 
 
     "}}}
