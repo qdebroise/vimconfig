@@ -37,23 +37,18 @@ set viminfo^=%
 
 " Set the behavior when switching buffers like with the quickfix winwdow.
 set switchbuf=useopen,usetab
-" [REMOVED] Even though it is useful in some cases, it became anoying for the quickfix window to create new splits.
-" set switchbuf+=vsplit
 
 " Use spaces instead of tabs.
 set expandtab
-
-" Be smart when using tabs.
-set smarttab
-
 " Set 1 Tab to be 4 spaces.
 set shiftwidth=4
 set tabstop=4
 
-" Auto indentation.
-set ai
+" Be smart when using tabs.
+set smarttab
 
-" Smart indentation.
+" Auto indentation & smart indentation
+set ai
 set si
 
 " Wrap long lines.
@@ -61,6 +56,13 @@ set wrap
 
 " Add a '$' when making changes to a line.
 set cpoptions+=$
+
+" Avoid getting stuck at search symbols when auto-completing (remove searching
+" in include directories).
+set complete-=i
+
+" Auto-completion menu behavior configuration.
+set completeopt=menu,longest,popup,noselect
 
 
 "}}}
@@ -73,7 +75,7 @@ set foldenable
 " Fold according to C syntax.
 " This gets *really* slow in large C files.
 " set foldmethod=syntax
-"set foldmethod=indent
+" set foldmethod=indent
 
 " Allow one fold level only.
 set foldnestmax=1
@@ -90,9 +92,6 @@ set foldnestmax=1
 let mapleader = ","
 let g:mapleader = ","
 
-" Remap '²' to something more useful.
-map ² $
-
 " Fast saving mapping.
 nmap <leader>w :up!<cr>
 
@@ -100,8 +99,8 @@ nmap <leader>w :up!<cr>
 map j gj
 map k gk
 
-" Disable search highlights with ',<cr>'.
-map <silent> <leader><cr> :noh<cr>
+" Disable search highlights with ',<CR>'.
+map <silent> <leader><CR> :noh<CR>
 
 " Better way to move between windows.
 map <C-j> <C-W>j
@@ -120,12 +119,6 @@ endif
 " Remap Vim's '0' to first non-blank character.
 map 0 ^
 
-" Move a line of text using 'ALT+[jk]'.
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-3<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
 " Allow to use '.' in visual mode.
 vnoremap . :norm.<CR>
 
@@ -136,30 +129,30 @@ inoremap jk <Esc>
 vnoremap < <gv
 vnoremap > >gv
 
-" Jump to the previous buffer.
+" Fast mapping to alternate between the two last opened buffers.
 nnoremap <leader><Tab> <C-^>
 
 " Easier jumping to matching bracket.
 nnoremap <leader>ù %
 
+" Change default tag jumping behavior to show the list of matching positions
+" of the tag we try to jump to.
+nnoremap <C-]> g<C-]>
+nnoremap <C-$> g<C-]>
+
 "" Completion
 
-" Quick tag completion.
-inoremap <leader>; <C-x><C-]>
-
-" Quick file completion.
-inoremap <leader>cf <C-x><C-f>
+" Quick omni-completion.
+inoremap <leader>; <C-x><C-o>
 
 "" Quickfix
 
 " Quickly open the quickfix window.
-map <leader>f :topleft cope<cr>
+map <leader>q :topleft cope<CR>
 
-" Jump to the next error.
-map <leader>n :cn<cr>
-
-" Jump to the previous error.
-map <leader>p :cp<cr>
+" Jump to the next/previous item in quickfix list.
+map <leader>n :cn<CR>
+map <leader>p :cp<CR>
 
 " Run make and open the quickfix window if any error.
 map <F4> :make! -j6<CR><CR>:topleft cw 20<CR>
@@ -187,8 +180,9 @@ cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() =~# '^grep')
 " Set Vim path.
 set path=.,**
 
-" Files to ignore in the wild menu.
+" Files to ignore in the wild menu, vimgrep, etc.
 set wildignore+=*~,*.o,*.d,*.pyc
+set wildignore+=tags
 
 " Set UTF-8 as standard encoding.
 set encoding=utf8
@@ -213,6 +207,12 @@ set wildmenu
 
 set wildmode=list:longest,full
 
+" Use a fuzzy finder to find completion matches and sort wildmenu entries by
+" best-match.
+if v:version >= 900
+    set wildoptions=fuzzy
+endif
+
 " Always show cursor position.
 set ruler
 
@@ -226,10 +226,8 @@ set cmdheight=2
 set noerrorbells
 set novisualbell
 
-"set cursorline
-
 " Highlight the specified column.
-set colorcolumn=80
+set colorcolumn=100
 
 " Display line numbers relative to the cursor position.
 set relativenumber
@@ -254,8 +252,8 @@ set stal=1
 set laststatus=2
 
 " Status line format.
-"set statusline=%#StatusLine#                       " Status line color
-"set statusline+=[%n]                               " Buffer number.
+set statusline=                                     " Clear the status line
+set statusline+=[%n]                                " Buffer number.
 set statusline+=\ %t                                " Filename.
 set statusline+=\ [%{strlen(&fenc)?&fenc:'none'}]   " File encoding.
 set statusline+=[%{&ff}]                            " File type.
@@ -269,20 +267,22 @@ set statusline+=\ \ \ %p%%\ \ \                     " Percentage through the fil
 
 """"" @UX {{{
 
+" Enable mouse scrolling.
+set mouse=a
+
 " Set an offset to the cursor when moving up/down.
 set so=7
 
 " Make buffer switching more convenient if buffers aren't saved.
 set hid
 
-" Configure backspace so it acts as it should act.
+" Configure backspace so that it acts as it should.
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
-" Ignore case when searching.
+" Ignore case when searching...
 set ignorecase
-
-" Ignore case, but be smart when using upper cases.
+" but be smart when using upper cases.
 set smartcase
 
 " Highlight search results.
@@ -294,10 +294,10 @@ set incsearch
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
 
-" Turn on special regex characters.
+" Turn on special regex characters. See ':help magic' table.
 set magic
 
-" Show matching brackets.
+" Highlight matching brackets.
 set showmatch
 
 " Blinking frequency when matching brackets.
@@ -326,19 +326,6 @@ set background=dark
 " Set colorscheme to use.
 colorscheme aguamenti
 
-" Set some colors that I don't want colorschemes to modify.
-" Set foreground and background colors.
-hi Normal ctermfg=LightGray ctermbg=232 guifg=#ffffff guibg=#080808
-
-" Popup menu
-hi Pmenu        cterm=none ctermbg=LightMagenta ctermfg=234     gui=NONE guibg=#ffafff guifg=#1c1c1c
-hi PmenuSbar    cterm=none ctermbg=Magenta      ctermfg=none    gui=none guibg=#ff5fff guifg=NONE
-hi PmenuThumb   cterm=none ctermbg=DarkGrey     ctermfg=none    gui=NONE guibg=#585858 guifg=NONE
-hi PmenuSel     cterm=bold ctermbg=DarkMagenta  ctermfg=White   gui=bold guibg=#d700d7 guifg=#ffffff
-
-" Other
-hi Directory    cterm=bold ctermbg=none         ctermfg=Blue    gui=bold guibg=NONE    guifg=#005fff
-
 " Change the default font on Windows GVim.
 if has("win16") || has("win32")
     set guifont=Consolas:h10
@@ -352,7 +339,7 @@ let g:markdown_fenced_languages = ['c', 'cpp', 'c++=cpp', 'html', 'javascript', 
 """"" @NETRW {{{
 
 " Explorer shortcut
-nnoremap <leader>e :Lexplore<cr>
+nnoremap <leader>e :Lexplore<CR><C-w>=
 
 " Hide the explorer banner.
 let g:netrw_banner=0
@@ -397,8 +384,9 @@ augroup CursorLine
     au WinLeave * setlocal nocursorline
 augroup END
 
-" Delete trailing whitespaces on save for C source files and headers.
+" Delete trailing whitespaces on save for C/C++ source files and headers.
 autocmd BufWritePre *.[ch] %s/\s\+$//ge
+autocmd BufWritePre *.cpp %s/\s\+$//ge
 " Automatically add headguards for C header files.
 autocmd BufNewFile *.h keepalt 0r ~/.vim/templates/skeleton.h | %substitute#\[:VIM_EVAL:\]\(.\{-\}\)\[:VIM_EVAL:\]#\=eval(submatch(1))#ge
 " Python template file.
