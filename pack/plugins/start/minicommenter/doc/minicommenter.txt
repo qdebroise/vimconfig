@@ -26,8 +26,8 @@ functionnalities. Only the bare necessities ♫.
 
 2. - FUNCTIONNALITY                             *minicommenter-functionnality*
 
-Comment toggling, both in Normal and Visual mode through the `<leader>cc`
-mapping. 
+Comment toggling, both in Normal and Visual mode through the *:ToggleComment* 
+command.
 
 ==============================================================================
 
