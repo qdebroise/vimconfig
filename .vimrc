@@ -13,6 +13,8 @@
 "       - GDB: Vim built-in package.
 "       - minicommenter: my own plugin :)
 "       - auto-pairs: https://github.com/jiangmiao/auto-pairs
+"       - FZF: https://github.com/junegunn/fzf
+"       - Ripgrep (when available)
 
 
 """"" @GENERAL {{{
@@ -168,6 +170,14 @@ vnoremap $] <esc>`>a]<esc>`<i[<esc>
 vnoremap $} <esc>`>a}<esc>`<i{<esc>
 vnoremap $" <esc>`>a"<esc>`<i"<esc>
 vnoremap $' <esc>`>a'<esc>`<i'<esc>
+
+" Remap the :grep command so that:
+" - No 'Press ENTER to continue' action is required.
+" - Vim don't jump to the first match.
+" - The quickfix window opens if there are any results.
+cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() =~# '^grep')
+    \ ? 'silent! grep! \| redr! \| topleft cw<C-Left><C-Left><C-Left><C-Left><C-Left><Left>'
+    \ : 'grep'
 
 
 "}}}
@@ -444,13 +454,35 @@ silent! packadd cfilter
 
     "}}}
 
-    " @TODO plugin settings.
+    """"" FZF {{{
+        silent! packadd fzf
+        if exists(":FZF")
+            if has('popupwin')
+                let g:fzf_layout = { 'window': { 'width': 1.0, 'height': 0.4, 'relative': v:true, 'yoffset': 1.0 } }
+            else
+                let g:fzf_layout = { 'down': '40%' }
+            endif
+            " @Bug: collision with the ctrl-j/k binding for moving between buffers.
+            " nnoremap <leader>f :FZF --bind=ctrl-j:down,ctrl-k:up<Enter>
+            nnoremap <leader>f :FZF<Enter>
+        endif
+
+    "}}}
+
+    """"" Ripgrep {{{
+        " This isn't a VIM plugin per say but if the ripgrep executable is
+        " found in $PATH then we can add custom bindings and make other
+        " tools like FZF use ripgrep.
+        if executable('rg')
+            " Use ripgrep as the FZF file finder.
+            let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
+            let &grepprg='rg --vimgrep --smart-case'
+        endif
 
     "}}}
 
 
 "}}}
-
 
 "" vim:foldmethod=marker
 "" vim:foldclose=all
