@@ -463,7 +463,11 @@ silent! packadd cfilter
         " tools like FZF use ripgrep.
         if executable('rg')
             " Use ripgrep as the FZF file finder.
-            let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
+            if has("win16") || has("win32")
+                let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
+            else
+                let $FZF_DEFAULT_COMMAND='rg --files . 2> /dev/null'
+            endif
             let &grepprg='rg --vimgrep --smart-case'
         endif
 
